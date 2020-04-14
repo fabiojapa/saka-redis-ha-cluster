@@ -1,0 +1,82 @@
+version: '2'
+services:
+  redis-4:
+    image: redis:5.0.7-alpine
+    stdin_open: true
+    tty: true
+    labels:
+      io.rancher.scheduler.affinity:host_label: redis4=true
+      io.rancher.container.hostname_override: container_name
+      io.rancher.container.pull_image: always
+  redis-2:
+    image: redis:5.0.7-alpine
+    stdin_open: true
+    tty: true
+    labels:
+      io.rancher.scheduler.affinity:host_label: redis2=true
+      io.rancher.container.hostname_override: container_name
+      io.rancher.container.pull_image: always
+  redis-3:
+    image: redis:5.0.7-alpine
+    stdin_open: true
+    tty: true
+    labels:
+      io.rancher.scheduler.affinity:host_label: redis3=true
+      io.rancher.container.hostname_override: container_name
+      io.rancher.container.pull_image: always
+  redis-sentinel-2:
+    image: s7anley/redis-sentinel-docker:4.0.10
+    environment:
+      DOWN_AFTER: '10000'
+      FAILOVER_TIMEOUT: '30000'
+      MASTER: redis
+      MASTER_NAME: mymaster
+      QUORUM: '1'
+      REDIS_PORT: '6379'
+      SLAVES: redis-2;redis-3;redis-4
+    stdin_open: true
+    tty: true
+    labels:
+      io.rancher.scheduler.affinity:host_label: redis.sentinel2=true
+      io.rancher.container.hostname_override: container_name
+      io.rancher.container.pull_image: always
+  redis-sentinel-1:
+    image: s7anley/redis-sentinel-docker:4.0.10
+    environment:
+      DOWN_AFTER: '10000'
+      FAILOVER_TIMEOUT: '30000'
+      MASTER: redis
+      MASTER_NAME: mymaster
+      QUORUM: '1'
+      REDIS_PORT: '6379'
+      SLAVES: redis-2;redis-3;redis-4
+    stdin_open: true
+    tty: true
+    labels:
+      io.rancher.scheduler.affinity:host_label: redis.sentinel1=true
+      io.rancher.container.hostname_override: container_name
+      io.rancher.container.pull_image: always
+  redis:
+    image: redis:5.0.7-alpine
+    stdin_open: true
+    tty: true
+    labels:
+      io.rancher.scheduler.affinity:host_label: redis1=true
+      io.rancher.container.hostname_override: container_name
+      io.rancher.container.pull_image: always
+  redis-sentinel-3:
+    image: s7anley/redis-sentinel-docker:4.0.10
+    environment:
+      DOWN_AFTER: '10000'
+      FAILOVER_TIMEOUT: '30000'
+      MASTER: redis
+      MASTER_NAME: mymaster
+      QUORUM: '1'
+      REDIS_PORT: '6379'
+      SLAVES: redis-2;redis-3;redis-4
+    stdin_open: true
+    tty: true
+    labels:
+      io.rancher.scheduler.affinity:host_label: redis.sentinel3=true
+      io.rancher.container.hostname_override: container_name
+      io.rancher.container.pull_image: always
